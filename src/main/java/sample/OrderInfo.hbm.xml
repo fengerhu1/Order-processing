@@ -1,0 +1,20 @@
+<hibernate-mapping package="sample">
+    <class name="sample.OrderInfo" table="OrderInfo">
+        <!--一,主键属性  -->
+        <id name="order_id" column="order_id">
+            <generator class="native"></generator>
+        </id>
+        <!-- 二,其它属性 -->
+        <property name="use_id" column="use_id"/>
+        <property name="initiator" column="initiator"/>
+        <property name="time" column="time"/>
+        <!-- 三,表示和商品的关系 -->
+        <!--3.1 set标签的name属性:多的一方的集合的名字  -->
+        <set name="items" cascade="save-update">
+            <!--3.2 key的 column表示多的一方外键名 -->
+            <key column="order_id"/>
+            <!--3.3 one-to-many的class属性表示多的一方类的全限定名  -->
+            <one-to-many class="Item"/>
+        </set>
+    </class>
+</hibernate-mapping>

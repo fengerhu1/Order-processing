@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="sample">
+    <!-- 此处配置的class name与上面的package合并得到完整的类名 -->
+    <class name="Movie" table="Movie" >
+
+        <!-- MOVIE_ID列作为MOVIE表的主键，同Movie类的id属性关联 -->
+        <id name="id" column="MOVIE_ID" />
+
+        <!-- string类型对应的数据库类型为VARCHAR(255)，可以存储255个字符 -->
+        <property name="name" type="string" column="NAME" />
+
+        <!-- desc属性比较长，字段类型需设置为text，最多可以存储2^32 - 1个字符 -->
+        <property name="description" type="text" column="DESCRIPTION" />
+    </class>
+
+</hibernate-mapping>

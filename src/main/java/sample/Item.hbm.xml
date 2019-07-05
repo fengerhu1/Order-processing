@@ -1,0 +1,18 @@
+<hibernate-mapping package="sample">
+    <class name="Item" table="Item">
+        <!--一,主键属性  -->
+        <id name="item_id" column="item_id">
+            <generator class="native"></generator>
+        </id>
+        <!-- 二,其它属性 -->
+        <property name="id" column="id"/>
+        <property name="number" column="number"/>
+
+        <!-- 三,表示和分类的关系 -->
+        <!--3.1name:一的一方对象的名字
+              class: 一的一方类的全限定名
+              column:外键的名字
+          -->
+        <many-to-one name="OrderInfo" class="sample.OrderInfo" column="order_id"  cascade="save-update"/>
+    </class>
+</hibernate-mapping>
