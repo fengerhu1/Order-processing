@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 public class CreateOrder  {
-    @RequestMapping("/createorder")
+    @RequestMapping("/create_order")
     String createOrder(int user_id, String initiator, Long time, String items)
             throws InterruptedException {
 
