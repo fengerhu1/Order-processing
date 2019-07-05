@@ -1,0 +1,23 @@
+package com.dsgroup4.httphandler.common;
+
+import com.alibaba.fastjson.annotation.JSONField;
+
+import java.util.ArrayList;
+
+public class InputCase {
+    @JSONField(name = "use_id")
+    public int use_id;
+    @JSONField(name = "initiator")
+    public String initiaiator;
+    @JSONField(name = "time")
+    public Long time;
+    @JSONField(name = "item")
+    public  ArrayList<InputItem> itemlist;
+
+    public InputCase(int use_id, String initiaiator,Long time,ArrayList<InputItem> itemlist) {
+        this.use_id = use_id;
+        this.initiaiator = initiaiator;
+        this.time = time;
+        this.itemlist = itemlist;
+    }
+}
