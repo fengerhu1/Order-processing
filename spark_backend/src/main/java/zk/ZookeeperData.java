@@ -50,5 +50,10 @@ public class ZookeeperData {
             showZkPathData(zkClient, childPath, serializer);
         }
     }
+    public static String returndata(ZkClient zkClient, String root, ZkSerializer serializer) {
+        zkClient.setZkSerializer(serializer);
+        Object data = zkClient.readData(root, true);
+        return data.toString();
+    }
 }
 

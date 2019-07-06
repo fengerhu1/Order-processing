@@ -25,7 +25,7 @@
         <property name="show_sql">true</property>
 
         <!-- 每次启动的时候，会把表先删除重新创建 -->
-        <property name="hbm2ddl.auto">create</property>
+        <!--<property name="hbm2ddl.auto">create</property>-->
 
         <!-- 数据类和表关联关系文件存放路径，Hibernate会在整个classpath下查找该文件 -->
         <mapping resource="sample/Movie.hbm.xml"/>

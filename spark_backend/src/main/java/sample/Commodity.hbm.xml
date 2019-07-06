@@ -1,5 +1,5 @@
 <hibernate-mapping package="sample">
-    <class name="sample.Commodity" table="Commodity">
+    <class name="sample.Commodity" table="commodity">
         <!--一,主键属性  -->
         <id name="Id" column="Id">
             <generator class="native"></generator>

@@ -25,6 +25,9 @@ public class ReadLock extends BaseLock implements LockI {
     public ReadLock(ZkClient client, String basePath) {
         super(client, basePath, LOCK_NAME);
         this.basePath = basePath;
+        if(!client.exists(basePath)) {
+            client.createPersistent(basePath,true);
+        }
     }
 
     @Override
