@@ -1,17 +1,17 @@
 package sample;
 
 public class Commodity {
-    private Long Id;
+    private int Id;
     private String Name;
     private float price;
     private String currency;
     private int inventory;
 
-    public void setId(Long id) {
+    public void setId(int id) {
         Id = id;
     }
 
-    public Long getId() {
+    public int getId() {
         return Id;
     }
 
