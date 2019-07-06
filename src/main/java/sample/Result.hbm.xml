@@ -1,0 +1,15 @@
+<hibernate-mapping package="sample">
+    <class name="sample.Result" table="Result">
+        <!--一,主键属性  -->
+        <id name="id" column="id">
+            <generator class="native"></generator>
+        </id>
+        <!-- 二,其它属性 -->
+        <property name="user_id" column="user_id"/>
+        <property name="initiator" column="initiator"/>
+        <property name="success" column="success"/>
+        <property name="paid" column="paid"/>
+        <!-- 三,表示和商品的关系 -->
+        
+    </class>
+</hibernate-mapping>
