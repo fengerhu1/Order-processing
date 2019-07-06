@@ -1,0 +1,15 @@
+<hibernate-mapping package="sample">
+    <class name="sample.Commodity" table="Commodity">
+        <!--一,主键属性  -->
+        <id name="Id" column="Id">
+            <generator class="native"></generator>
+        </id>
+        <!-- 二,其它属性 -->
+        <property name="Name" column="Name"/>
+        <property name="price" column="price"/>
+        <property name="currency" column="currency"/>
+        <property name="inventory" column="inventory"/>
+        <!-- 三,表示和商品的关系 -->
+
+    </class>
+</hibernate-mapping>

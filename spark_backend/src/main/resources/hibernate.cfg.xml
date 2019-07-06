@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+        <!-- 数据库JDBC配置 -->
+        <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+        <property name="connection.url">jdbc:mysql://localhost:3306/dsdb?serverTimezone=GMT%2B8&amp;useUnicode=true&amp;characterEncoding=UTF-8</property>
+        <property name="connection.username">root</property>
+        <property name="connection.password"></property>
+
+        <!-- JDBC数据库连接池大小 -->
+        <property name="connection.pool_size">10</property>
+
+        <!-- SQL dialect -->
+        <!-- <property name="dialect">org.hibernate.dialect.H2Dialect</property> -->
+        <property name="dialect">mysql.CustomMySQL5Dialect</property>
+
+        <!-- Disable the second-level cache  -->
+        <property name="cache.provider_class">org.hibernate.cache.internal.NoCacheProvider</property>
+
+        <!-- Echo all executed SQL to stdout -->
+        <property name="show_sql">true</property>
+
+        <!-- 每次启动的时候，会把表先删除重新创建 -->
+        <property name="hbm2ddl.auto">create</property>
+
+        <!-- 数据类和表关联关系文件存放路径，Hibernate会在整个classpath下查找该文件 -->
+        <mapping resource="sample/Movie.hbm.xml"/>
+        <mapping resource="sample/OrderInfo.hbm.xml"/>
+        <mapping resource="sample/Item.hbm.xml"/>
+        <mapping resource="sample/Result.hbm.xml"/>
+        <mapping resource="sample/Commodity.hbm.xml"/>
+
+    </session-factory>
+</hibernate-configuration>
