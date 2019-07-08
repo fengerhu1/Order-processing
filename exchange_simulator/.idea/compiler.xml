@@ -6,20 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="httphandler" />
-        <module name="order_processing_engine" />
-        <module name="version1.1" />
+        <module name="exchange_simulator" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="httphandler" target="1.8" />
-      <module name="order_processing_engine" target="1.5" />
-      <module name="version1.1" target="1.5" />
+      <module name="exchange_simulator" target="1.6" />
     </bytecodeTargetLevel>
-  </component>
-  <component name="JavacSettings">
-    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="httphandler" options="-parameters" />
-    </option>
   </component>
 </project>

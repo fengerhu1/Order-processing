@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>sparkkafka</groupId>
-    <artifactId>version1.1</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <groupId>DsGroup4</groupId>
+    <artifactId>order_processing_engine</artifactId>
+    <version>1.0</version>
     <properties>
         <spark.version>2.2.0</spark.version>
         <hibernate.core.version>3.6.10.Final</hibernate.core.version>
@@ -23,11 +23,6 @@
             <version>1.2.57</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>${hibernate.core.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.hibernate.javax.persistence</groupId>
             <artifactId>hibernate-jpa-2.0-api</artifactId>
@@ -57,20 +52,6 @@
             <version>${spark.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-core -->
-
-
-        <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-hive -->
-        <dependency>
-            <groupId>org.apache.spark</groupId>
-            <artifactId>spark-hive_2.11</artifactId>
-            <version>${spark.version}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-sql -->
-        <dependency>
-            <groupId>org.apache.spark</groupId>
-            <artifactId>spark-sql_2.11</artifactId>
-            <version>${spark.version}</version>
-        </dependency>
         <!-- Hibernate依赖 -->
         <dependency>
             <groupId>org.hibernate</groupId>
