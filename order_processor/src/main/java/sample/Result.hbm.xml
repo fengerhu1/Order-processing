@@ -5,6 +5,7 @@
             <generator class="native"></generator>
         </id>
         <!-- 二,其它属性 -->
+        <property name="order_id" column="order_id"/>
         <property name="user_id" column="user_id"/>
         <property name="initiator" column="initiator"/>
         <property name="success" column="success"/>

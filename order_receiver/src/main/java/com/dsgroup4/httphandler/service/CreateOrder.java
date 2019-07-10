@@ -39,7 +39,7 @@ public class CreateOrder  {
         order.put("user_id", user_id);
         order.put("initiator", initiator);
         order.put("time", time);
-        order.put("items", items);
+        order.put("item", items);
         order.put("order_id", order_id);
         String msg = order.toJSONString();
         producer.send(new ProducerRecord<String, String>(topic, "hello", msg));

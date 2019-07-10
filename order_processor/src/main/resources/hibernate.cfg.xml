@@ -7,7 +7,8 @@
     <session-factory>
         <!-- 数据库JDBC配置 -->
         <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
-        <property name="connection.url">jdbc:mysql://localhost:3306/dsdb?serverTimezone=GMT%2B8&amp;useUnicode=true&amp;characterEncoding=UTF-8</property>
+        <!--<property name="connection.url">jdbc:mysql://localhost:3306/dsdb?serverTimezone=GMT%2B8&amp;useUnicode=true&amp;characterEncoding=UTF-8</property>-->
+        <property name="connection.url">jdbc:mysql:loadbalance://10.0.0.154:3306,10.0.0.137:3306,10.0.0.115:3306/dsdb?loadBalanceAutoCommitStatementThreshold=5</property>
         <property name="connection.username">root</property>
         <property name="connection.password"></property>
 
@@ -23,7 +24,7 @@
 
         <!-- Echo all executed SQL to stdout -->
         <property name="show_sql">true</property>
-
+        <property name="hibernate.cache.use_query_cache">false</property>
         <!-- 每次启动的时候，会把表先删除重新创建 -->
         <!--<property name="hbm2ddl.auto">create</property>-->
 
