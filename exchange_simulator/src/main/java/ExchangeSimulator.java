@@ -61,6 +61,7 @@ public class ExchangeSimulator implements Runnable{
             return;
         }
         double order_currency =  Float.parseFloat(ZookeeperData.returndata(zkClientForData,"/currency/"+currency,new ZkSerialize()));
+        System.out.println(currency+"当前汇率:"+String.valueOf(order_currency));
         Random random=new Random(System.currentTimeMillis());
         //最多涨跌两个百分点
         double change = random.nextDouble()*0.02*rate;

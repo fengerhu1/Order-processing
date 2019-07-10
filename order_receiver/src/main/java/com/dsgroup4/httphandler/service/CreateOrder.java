@@ -1,6 +1,7 @@
 package com.dsgroup4.httphandler.service;
 
 import com.alibaba.fastjson.JSONObject;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.UUID;
@@ -10,6 +11,7 @@ import com.dsgroup4.httphandler.common.InputCase;
 import kafka.serializer.*;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import com.dsgroup4.httphandler.common.InputItem;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.Properties;
@@ -17,9 +19,12 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Properties;
 
+@Controller
+@RequestMapping
 public class CreateOrder  {
     @RequestMapping("/create_order")
-    String createOrder(int user_id, String initiator, Long time, String items)
+    @ResponseBody
+    public String createOrder(int user_id, String initiator, Long time, String items)
             throws InterruptedException {
 
 
