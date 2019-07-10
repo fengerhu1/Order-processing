@@ -19,7 +19,7 @@ const columns = [
 const columnsOrder = [
     {
         title: 'order id',
-        dataIndex: 'order_id',
+        dataIndex: 'id',
         key: 0
     },
     {
@@ -100,7 +100,7 @@ class Page extends Component {
     }
     startSearchOrder = () => {
         this.setState({
-            showSearch: true
+            showSearch: true,
         });
     }
     createOrder = () => {
@@ -113,16 +113,23 @@ class Page extends Component {
         jsonbody.initiator = this.state.initiator
         jsonbody.time = new Date().getTime()
         jsonbody.items = this.state.order_items.toString()
-        let url = IPaddress + 'service/create_order';
+        let url = IPaddress + 'create_order';
         let options={};
         options.method='POST';
         options.headers={ 'Accept': 'application/json', 'Content-Type': 'application/json'};
         options.body = JSON.stringify(jsonbody);
+        let that = this
         fetch(url, options)
             .then(response=>response.text())
             .then(responseJson=>{
                 let result = eval(responseJson);
                 message.success("下单成功！订单为：", result)
+                that.setState({
+                    user_id: '',
+                    itemid: '',
+                    itemnumber:'',
+                    order_items:[]
+                })
             }).catch(function(e){
             console.log(e);
         });
@@ -130,13 +137,19 @@ class Page extends Component {
 
     cancelOrder = () => {
         this.setState({
-            showCreate: false
+            showCreate: false,
+            user_id: '',
+            itemid: '',
+            itemnumber:'',
+            order_items:[]
         })
     }
 
     cancelSearch = () => {
         this.setState({
-            showSearch: false
+            showSearch: false,
+            orderid:'',
+            searchResult:[]
         })
     }
 
@@ -280,20 +293,27 @@ class Page extends Component {
         }
         else
         {
-            let jsonbody = {};
-            jsonbody.id = this.state.orderid
-            let url = IPaddress + '/get_order';
+            let url = IPaddress + 'get_order?id=' + this.state.orderid;
             let options={};
-            options.method='POST';
+            options.method='GET';
             options.headers={ 'Accept': 'application/json', 'Content-Type': 'application/json'};
-            options.body = JSON.stringify(jsonbody);
             let that = this
             fetch(url, options)
                 .then(response=>response.text())
                 .then(responseJson=>{
+                    console.log(responseJson)
                     let result = eval('(' + responseJson + ')');
-                    let tmp = that.state.searchResult
+                    let tmp = []
                     tmp.push(result)
+                    for(let i = 0; i < tmp.length; ++i){
+                        if(tmp[i].success)
+                        {
+                            tmp[i].success = "true"
+                        }
+                        else{
+                            tmp[i].success = "false"
+                        }
+                    }
                     that.setState({
                         searchResult: tmp
                     })
