@@ -8,7 +8,7 @@ import org.I0Itec.zkclient.ZkConnection;
 public abstract class ZookeeperAbstractLock implements ExtLock {
 
 	// ��Ⱥ���ӵ�ַ
-	protected String CONNECTION = "10.0.0.77:2181";
+	protected String CONNECTION = "10.0.0.77:2181,10.0.0.154:2181,10.0.0.137:2181,10.0.0.115:2181";
 	// zk�ͻ�������
 	protected ZkClient zkClient = new ZkClient(CONNECTION);
 	// path·��

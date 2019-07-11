@@ -20,7 +20,7 @@ public class CreateOrder {
         //org.apache.kafka.clients.producer.KafkaProducer producer1 = new Kafka
         org.apache.kafka.clients.producer.KafkaProducer<String,String> producer = new org.apache.kafka.clients.producer.KafkaProducer<String, String>(pro);
         System.out.println("createOrder");
-        String topic = "t0316";
+        String topic = "t0317";
 
 
 
@@ -33,10 +33,6 @@ public class CreateOrder {
             InputCase inputcase = new InputCase(654321+i,"USD",1234567L,itemlist);
 
             String msg = JSON.toJSONString(inputcase);
-            if (i % 3== 0 )
-                topic = "t0316";
-            if (i % 3== 1 )
-                topic = "t0317";
             //ProducerRecord <topic,partiton,key,value>
             producer.send(new ProducerRecord<String, String>(topic, "hello", msg));
             System.out.println(msg);
