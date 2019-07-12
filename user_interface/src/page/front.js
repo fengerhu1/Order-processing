@@ -18,11 +18,6 @@ const columns = [
 
 const columnsOrder = [
     {
-        title: 'order id',
-        dataIndex: 'id',
-        key: 0
-    },
-    {
         title: 'user id',
         dataIndex: 'user_id',
         key: 1
@@ -63,36 +58,7 @@ class Page extends Component {
             searchResult:[]
         }
     }
-    createOrder(){
-        /*let username = document.getElementById("username").value;
-        let password = document.getElementById("password").value;
-        let that  = this;
-        let jsonbody = {};
-        jsonbody.password = password;
-        jsonbody.username = username;
-        let url = IPaddress + 'service/login';
-        let options={};
-        options.method='POST';
-        options.headers={ 'Accept': 'application/json', 'Content-Type': 'application/json'};
-        options.body = JSON.stringify(jsonbody);
-        fetch(url, options)
-            .then(response=>response.text())
-            .then(responseJson=>{
-                let result = eval('(' + responseJson + ')');
-                if(result.result == "fail"){
-                    message.error('登录错误，请验证您的用户名和密码！', 3);
-                    return;
-                }
-                else{
-                    username = result.username;
-                    sessionStorage.setItem('username', username);
-                    window.location.href='/user';
-                    that.setState({});
-                }
-            }).catch(function(e){
-            console.log("Oops, error");
-        });*/
-    }
+
     startCreateOrder = () => {
         this.setState({
             showCreate: true
@@ -108,27 +74,32 @@ class Page extends Component {
         {
             return;
         }
+        // const fd = new FormData();
+        // fd.append('user_id', this.state.user_id)
+        // fd.append('initiator', this.state.initiator)
+        // fd.append('time', new Date().getTime())
+        // fd.append('items', JSON.stringify(this.state.order_items))
         let jsonbody = {};
-        jsonbody.user_id = Number.parseInt(this.state.user_id)
+        jsonbody.use_id = Number.parseInt(this.state.user_id)
         jsonbody.initiator = this.state.initiator
         jsonbody.time = new Date().getTime()
-        jsonbody.items = this.state.order_items.toString()
+        jsonbody.item = this.state.order_items
         let url = IPaddress + 'create_order';
         let options={};
         options.method='POST';
-        options.headers={ 'Accept': 'application/json', 'Content-Type': 'application/json'};
-        options.body = JSON.stringify(jsonbody);
+        options.headers={ 'Accept': 'application/json', 'content-type': 'application/json'};
+        options.body = JSON.stringify(jsonbody)
         let that = this
         fetch(url, options)
             .then(response=>response.text())
             .then(responseJson=>{
-                let result = eval(responseJson);
-                message.success("下单成功！订单为：", result)
+                let mess = "下单成功！订单为：" + responseJson
+                message.success(mess);
                 that.setState({
                     user_id: '',
                     itemid: '',
                     itemnumber:'',
-                    order_items:[]
+                    order_items:null
                 })
             }).catch(function(e){
             console.log(e);
@@ -141,7 +112,7 @@ class Page extends Component {
             user_id: '',
             itemid: '',
             itemnumber:'',
-            order_items:[]
+            order_items:null
         })
     }
 
@@ -149,7 +120,7 @@ class Page extends Component {
         this.setState({
             showSearch: false,
             orderid:'',
-            searchResult:[]
+            searchResult:null
         })
     }
 
@@ -159,7 +130,7 @@ class Page extends Component {
         }
         else
         {
-            let id = Number.parseInt(this.state.itemid)
+            let id = this.state.itemid
             let number = Number.parseInt(this.state.itemnumber)
             let tmp = this.state.order_items
             tmp.push({id: id, number: number})
@@ -177,6 +148,21 @@ class Page extends Component {
         for(let i = 0; i < strings.length; ++i)
         {
             if(strings[i] > '9' || strings[i] < '0')
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    isInt16(strings) {
+        if(strings.length < 1)
+        {
+            return false;
+        }
+        for(let i = 0; i < strings.length; ++i)
+        {
+            if((strings[i] > '9' || strings[i] < '0') && (strings[i] > 'f' || strings[i] < 'a'))
             {
                 return false;
             }
@@ -268,7 +254,7 @@ class Page extends Component {
     }
 
     OrderId = (id) => {
-        if (!this.isInt(id)) {
+        if (!this.isInt16(id)) {
             message.error("订单id需要为整数")
             this.setState({
                 orderid: ''
@@ -293,7 +279,7 @@ class Page extends Component {
         }
         else
         {
-            let url = IPaddress + 'get_order?id=' + this.state.orderid;
+            let url = IPaddress + 'get_order?order_id=' + this.state.orderid;
             let options={};
             options.method='GET';
             options.headers={ 'Accept': 'application/json', 'Content-Type': 'application/json'};
@@ -302,20 +288,19 @@ class Page extends Component {
                 .then(response=>response.text())
                 .then(responseJson=>{
                     console.log(responseJson)
-                    let result = eval('(' + responseJson + ')');
-                    let tmp = []
-                    tmp.push(result)
-                    for(let i = 0; i < tmp.length; ++i){
-                        if(tmp[i].success)
+                    let result = eval(responseJson);
+                    for(let i = 0; i < result.length; ++i){
+                        if(result[i].success)
                         {
-                            tmp[i].success = "true"
+                            result[i].success = "true"
                         }
                         else{
-                            tmp[i].success = "false"
+                            result[i].success = "false"
                         }
+                        result[i].paid = result[i].paid.toFixed(2)
                     }
                     that.setState({
-                        searchResult: tmp
+                        searchResult: result
                     })
                 }).catch(function(e){
                 console.log(e);
