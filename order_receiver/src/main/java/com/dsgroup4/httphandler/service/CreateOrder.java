@@ -28,6 +28,7 @@ public class CreateOrder  {
     private KafkaProducerScheduler scheduler;
 
     CreateOrder(){
+
         System.out.println("Kafka poll initializing...");
         scheduler = new KafkaProducerScheduler();
         System.out.println("Kafka poll ready...");
