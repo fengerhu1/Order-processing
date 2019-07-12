@@ -6,11 +6,12 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="result")
+@Table(name="Result")
 public class Result {
     @Id
     private String id;
     private int user_id;
+    private String order_id;
     private String initiator;
     private boolean success;
     private double paid;
@@ -53,5 +54,13 @@ public class Result {
 
     public void setUser_id(int user_id) {
         this.user_id = user_id;
+    }
+
+    public String getOrder_id() {
+        return order_id;
+    }
+
+    public void setOrder_id(String order_id) {
+        this.order_id = order_id;
     }
 }

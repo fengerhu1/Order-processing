@@ -27,9 +27,9 @@ public class GetOrder {
 
     @RequestMapping("/get_order")
     @ResponseBody
-    public String getOrder(String id){
-        Result result = resultRepository.getResultById(id);
-        return JSONObject.toJSONString(result);
+    public String getOrder(String order_id){
+        List<Result> results = resultRepository.getResultById(order_id);
+        return JSONObject.toJSONString(results);
     }
 
     @RequestMapping("/test")
