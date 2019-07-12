@@ -1,6 +1,8 @@
 package com.dsgroup4.httphandler.service;
 
 import com.alibaba.fastjson.JSONObject;
+import org.apache.kafka.clients.admin.KafkaAdminClient;
+import org.apache.kafka.clients.producer.KafkaProducer;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,13 +17,23 @@ import com.dsgroup4.httphandler.common.InputItem;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.constraints.NotNull;
-import java.sql.Time;
-import java.util.ArrayList;
+
 import java.util.Properties;
+
 
 @Controller
 @RequestMapping
 public class CreateOrder  {
+
+    private KafkaProducerScheduler scheduler;
+
+    CreateOrder(){
+        System.out.println("Kafka poll initializing...");
+        scheduler = new KafkaProducerScheduler();
+        System.out.println("Kafka poll ready...");
+    }
+
+
     public static String getRandomString(int length){
         String str="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         Random random=new Random();
@@ -37,14 +49,15 @@ public class CreateOrder  {
     public String createOrder(@RequestBody JSONObject order)
             throws InterruptedException {
         String order_id = UUID.randomUUID().toString().replace("-","");
-        Properties pro = new Properties();
-        pro.put("bootstrap.servers","10.0.0.115:9092,10.0.0.154:9092,10.0.0.137:9092");
-        pro.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        pro.put("value.serializer","org.apache.kafka.common.serialization.StringSerializer");
+//        Properties pro = new Properties();
+//        pro.put("bootstrap.servers","10.0.0.115:9092,10.0.0.154:9092,10.0.0.137:9092");
+//        pro.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+//        pro.put("value.serializer","org.apache.kafka.common.serialization.StringSerializer");
         //Producer<String,String> producer = new Producer<String, String>(new ProducerConfig(pro));
         //org.apache.kafka.clients.producer.KafkaProducer producer1 = new Kafka
-        org.apache.kafka.clients.producer.KafkaProducer<String,String>
-                producer = new org.apache.kafka.clients.producer.KafkaProducer<String, String>(pro);
+//        org.apache.kafka.clients.producer.KafkaProducer<String,String>
+//                producer = new org.apache.kafka.clients.producer.KafkaProducer<String, String>(pro);
+        KafkaProducer<String, String> producer = scheduler.getProducer();
 //        System.out.println("createOrder");
         String topic = "t0318";
 
@@ -57,7 +70,9 @@ public class CreateOrder  {
         String msg = order.toJSONString();
         System.out.println(msg);
         producer.send(new ProducerRecord<String, String>(topic, getRandomString(20), msg));
-        producer.close();
+        if (scheduler.returnProducer(producer))
+            throw new InterruptedException("return producer failure");
+//        producer.close();
         return order_id;
     }
 
