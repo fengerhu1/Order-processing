@@ -3,47 +3,48 @@ package src;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import common.InputCase;
-import common.InputItem;
 import org.apache.spark.api.java.function.Function;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import sample.Commodity;
 import sample.Item;
-import sample.OrderInfo;
 import sample.Result;
 import scala.Tuple2;
-
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.serialize.BytesPushThroughSerializer;
-import org.I0Itec.zkclient.serialize.SerializableSerializer;
 import rwlock.ReadLock;
 import rwlock.WriteLock;
 import zk.ZkSerialize;
 import zk.ZookeeperData;
 
 public class myFunction implements Function<Tuple2<String, String>, String> {
-    private Session session;
+
     public String call(Tuple2<String, String> v1) throws Exception {
+       ;
         JSONObject jsonObj = (JSONObject) JSON.parse(v1._2());
-        //System.out.println(jsonObj);
         Integer use_id = jsonObj.getInteger("use_id");
         String initiator = jsonObj.getString("initiator");
         Long time = jsonObj.getLong("time");
+        String order_id = jsonObj.getString("order_id");
         JSONArray templist = jsonObj.getJSONArray("item");
-        //ArrayList<InputItem> itemlist = new ArrayList<InputItem>();
         Set<Item> itemlist = new HashSet<Item>();
 
+        float result_paid = (float)0.0;//amount for this order
+        //walk through the whole item list
         if (templist != null) {
+            //create session and connect with zookeeper
+            Session session = null;
+            session = SessionCreate.getSession();
+            ZkClient zkClient4 = new ZkClient("10.0.0.77:2181,10.0.0.154:2181,10.0.0.137:2181,10.0.0.115:2181",500000, 500000);
+            zkClient4.setZkSerializer(new BytesPushThroughSerializer());//
+
             for (int i=0;i<templist.size();i++){
-                session.beginTransaction();
                 JSONObject tempitem = (JSONObject)JSON.parse(templist.getString(i));
                 String id = tempitem.getString("id");
                 Integer item_number = tempitem.getInteger("number");
@@ -51,43 +52,54 @@ public class myFunction implements Function<Tuple2<String, String>, String> {
                 inputItem.setId(id);
                 inputItem.setNumber(item_number);
                 itemlist.add(inputItem);
-                ZkClient zkClient4 = new ZkClient("10.0.0.77:2181,10.0.0.154:2181,10.0.0.137:2181,10.0.0.115:2181", 5000, 5000, new BytesPushThroughSerializer());
+                //connect zookeeper
+
                 WriteLock lock4 = new WriteLock(zkClient4, "/commodity"+id);
-                lock4.getLock();
+                //trick for address the dead lock
+                while (!lock4.getLock(200,TimeUnit.MILLISECONDS))
+                {
+                    System.out.println("没有拿到锁，再一次尝试拿锁");
+                }
+
+                Transaction tx = session.beginTransaction();
+                ObtainLease obtainLease = new ObtainLease(tx);
+                obtainLease.main();
                 Query query = session.createQuery("from Commodity where Id = ? ");
-                //2、填写上一步中占位符的内容
                 query.setParameter(0, Integer.parseInt( id ));
-
-                //3、使用Query对象的list方法得到数据集合
                 List<Commodity> list = query.list();
-                //3、遍历集合获取数据
                 ZookeeperData zookeeperData = new ZookeeperData();
-                ZkClient zkClient = new ZkClient("10.0.0.77:2181,10.0.0.154:2181,10.0.0.137:2181,10.0.0.115:2181");
-                zkClient.setZkSerializer(new ZkSerialize());
-                int  commodity_inventory =  Integer.parseInt(zookeeperData.returndata(zkClient,"/inventory/"+ String.valueOf(id),new ZkSerialize()));
-                System.out.println("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH" + String.valueOf(commodity_inventory));
-                for (Commodity commodity : list) {
-                    if (commodity_inventory >= item_number)
-                    {
-                        commodity.setInventory(commodity_inventory -item_number);
-                        zkClient.writeData("/inventory/"+ String.valueOf(id ), String.valueOf(commodity_inventory -item_number));
 
+                //always get one commofity but hiberate get the commodity list
+                for (Commodity commodity : list) {
+                    if (commodity.getInventory() >= item_number)
+                    {
+                        commodity.setInventory(commodity.getInventory() -item_number);
                         session.save(commodity);
                         Result result = new Result();
                         result.setUser_id(use_id);
                         result.setInitiator(initiator);
                         result.setSuccess(true);
+                        result.setOrder_id(order_id);
+                        String com_cur = commodity.getCurrency();
 
-                        ReadLock lock5 = new ReadLock(zkClient4, '/'+initiator);
-                        lock5.getLock();
-                        float order_currency =  Float.parseFloat(zookeeperData.returndata(zkClient,"/currency/"+initiator,new ZkSerialize()));
-                        lock5.releaseLock();
-                        ReadLock lock6 = new ReadLock(zkClient4, '/'+commodity.getCurrency());
-                        lock6.getLock();
-                        float commodity_currency =  Float.parseFloat(zookeeperData.returndata(zkClient,"/currency/"+commodity.getCurrency(),new ZkSerialize()));
-                        lock6.releaseLock();
+                        //try to get the read lock for protecting the currency initiator
+                        ReadLock lock5 = new ReadLock(zkClient4, "/currencyLock");
+
+                        while(!lock5.getLock(1000,TimeUnit.MILLISECONDS))
+                        {
+                            System.out.println("读锁没有拿到");
+                        }
+                        JSONObject currencyObject = (JSONObject) JSON.parse(zookeeperData.returndata(zkClient4,"/currency/data",new ZkSerialize()));
+                        float order_currency = currencyObject.getFloat(initiator);
+                        float commodity_currency = currencyObject.getFloat(com_cur);
+                        zkClient4.setZkSerializer(new BytesPushThroughSerializer());
+                        lock5.releaseLock();;
+
+                        //calculate the final paid
                         float fianl_paid = item_number *commodity.getPrice()*commodity_currency / order_currency;
                         result.setPaid(fianl_paid);
+                        //result paid is the part of the return value
+                        result_paid = fianl_paid;
                         session.save(result);
                     }
                     else
@@ -97,19 +109,20 @@ public class myFunction implements Function<Tuple2<String, String>, String> {
                         result.setInitiator(initiator);
                         result.setSuccess(false);
                         result.setPaid(0);
+                        result.setOrder_id(order_id);
+                        result_paid = 0;
                         session.save(result);
                     }
                 }
+
                 session.getTransaction().commit();
                 lock4.releaseLock();
-
             }
+            zkClient4.close();
+            session.close();
         }
-
-
-        return v1._2();
+        ///return value form is initiator combined with paid for this order
+        return initiator+" "+String.valueOf(result_paid);
     }
-    public myFunction(Session session) {
-        this.session = session;;
-    }
+
 }

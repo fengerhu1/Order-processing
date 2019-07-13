@@ -7,6 +7,15 @@ public class Result {
     private String initiator;
     private boolean success;
     private double paid;
+    private String order_id;
+
+    public void setOrder_id(String order_id) {
+        this.order_id = order_id;
+    }
+
+    public String getOrder_id() {
+        return order_id;
+    }
 
     public boolean isSuccess() {
         return success;

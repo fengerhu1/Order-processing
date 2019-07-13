@@ -90,7 +90,7 @@ public abstract class BaseLock {
                                 break;
                             }
 
-                            latch.await(millisToWait, TimeUnit.MICROSECONDS);
+                            latch.await(millisToWait, TimeUnit.MILLISECONDS);
                         } else {
                             latch.await();
                         }

@@ -1,9 +1,10 @@
 package src;
 import com.alibaba.fastjson.JSON;
 import common.InputCase;
-import kafka.serializer.StringEncoder;
+
 import org.apache.kafka.clients.producer.ProducerRecord;
 import common.InputItem;
+import org.stringtemplate.v4.ST;
 
 import java.util.ArrayList;
 import java.util.Properties;
@@ -19,16 +20,16 @@ public class CreateOrder {
         //org.apache.kafka.clients.producer.KafkaProducer producer1 = new Kafka
         org.apache.kafka.clients.producer.KafkaProducer<String,String> producer = new org.apache.kafka.clients.producer.KafkaProducer<String, String>(pro);
         System.out.println("createOrder");
-        String topic = "t0316";
+        String topic = "t0317";
 
 
 
-        for (int i =0 ;i <2;i++) {
+        for (int i =0 ;i <100;i++) {
             ArrayList<InputItem> itemlist = new ArrayList<InputItem>();
-            InputItem item1 = new InputItem("2", 1);
-            InputItem item2 = new InputItem("3", 1+i);
+            InputItem item1 = new InputItem(String.valueOf((i % 100)+1), 1);
+//            InputItem item2 = new InputItem("3", 1);
             itemlist.add(item1);
-            itemlist.add(item2);
+//            itemlist.add(item2);
             InputCase inputcase = new InputCase(654321+i,"USD",1234567L,itemlist);
 
             String msg = JSON.toJSONString(inputcase);

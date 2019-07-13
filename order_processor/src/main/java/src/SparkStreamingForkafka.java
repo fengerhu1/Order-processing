@@ -24,7 +24,7 @@ import java.util.*;
  **/
 public class SparkStreamingForkafka {
     public static void main(String[] args) throws InterruptedException {
-        SparkConf sc = new SparkConf().setMaster("local[2]").setAppName("test");
+        SparkConf sc = new SparkConf().setMaster("spark://10.0.0.77:7077").setAppName("test");
         JavaStreamingContext jsc = new JavaStreamingContext(sc, Durations.seconds(5));
         Map<String,String> kafkaParam = new HashMap<String,String>();
         kafkaParam.put("metadata.broker.list","10.0.0.77:9092,10.0.0.154:9092,10.0.0.137:9092");

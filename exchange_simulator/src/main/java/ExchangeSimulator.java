@@ -1,3 +1,6 @@
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import common.CurrencyTable;
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.serialize.BytesPushThroughSerializer;
 import rwlock.WriteLock;
@@ -5,6 +8,7 @@ import zk.ZkSerialize;
 import zk.ZookeeperData;
 
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Allen
@@ -53,14 +57,22 @@ public class ExchangeSimulator implements Runnable{
                 5000, 5000, new BytesPushThroughSerializer());
         ZkClient zkClientForData = new ZkClient("10.0.0.77:2181,10.0.0.154:2181,10.0.0.137:2181,10.0.0.115:2181",
                 5000, 5000, new ZkSerialize());
-        WriteLock exchange_rate_lock = new WriteLock(zkClientForLock, '/'+currency);
+        WriteLock exchange_rate_lock = new WriteLock(zkClientForLock, "/currencyLock");
         try {
-            exchange_rate_lock.getLock();
+            while (!exchange_rate_lock.getLock(1000, TimeUnit.MILLISECONDS)) {
+                System.out.println("读锁没有拿到");
+            }
         }catch (Exception e){
             System.out.println(e.getMessage());
             return;
         }
-        double order_currency =  Float.parseFloat(ZookeeperData.returndata(zkClientForData,"/currency/"+currency,new ZkSerialize()));
+        JSONObject currencyObject = (JSONObject) JSON.parse(ZookeeperData.returndata(zkClientForData, "/currency/data", new ZkSerialize()));
+        double order_currency = currencyObject.getFloat(currency);
+        float f1 =  currencyObject.getFloat("USD");
+        float f2 =  currencyObject.getFloat("RMB");
+        float f3 =  currencyObject.getFloat("JPY");
+        float f4 =  currencyObject.getFloat("EUR");
+
         System.out.println(currency+"当前汇率:"+String.valueOf(order_currency));
         Random random=new Random(System.currentTimeMillis());
         //最多涨跌两个百分点
@@ -73,7 +85,17 @@ public class ExchangeSimulator implements Runnable{
         //不能超过限制
         if(order_currency > max_rate) order_currency = max_rate;
         if(order_currency < min_rate) order_currency = min_rate;
-        zkClientForData.writeData("/currency/"+currency, String.valueOf(order_currency));
+        if (currency.equals("USD"))
+            f1 = (float)order_currency;
+        if (currency.equals("RMB"))
+            f2 = (float)order_currency;
+        if (currency.equals("JPY"))
+            f3 = (float)order_currency;
+        if (currency.equals("EUR"))
+            f4 = (float)order_currency;
+        CurrencyTable currencyTable = new CurrencyTable(f1,f2,f3,f4,(float)1);
+        System.out.println(JSON.toJSONString(currencyTable));
+        zkClientForData.writeData("/currency/data", JSON.toJSONString(currencyTable));
         try {
             exchange_rate_lock.releaseLock();
         }catch (Exception e){

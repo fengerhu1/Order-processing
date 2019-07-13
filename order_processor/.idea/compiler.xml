@@ -7,13 +7,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="httphandler" />
-        <module name="order_processing_engine" />
         <module name="version1.1" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="create" target="1.5" />
       <module name="httphandler" target="1.8" />
-      <module name="order_processing_engine" target="1.5" />
       <module name="version1.1" target="1.5" />
     </bytecodeTargetLevel>
   </component>

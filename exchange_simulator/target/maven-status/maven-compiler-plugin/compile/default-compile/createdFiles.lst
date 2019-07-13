@@ -9,8 +9,10 @@ congge\zklock\OrderService.class
 congge\utils\ServerUtils.class
 zk\ZookeeperData.class
 congge\test\Test1.class
+common\InputItem.class
 rwlock\BaseLock$2.class
 congge\test\Test001$1.class
+common\InputCase.class
 zk\ZkSerialize.class
 congge\zk\ZkServerScoekt.class
 congge\zklock\ExtLock.class
@@ -26,3 +28,5 @@ rwlock\MyTestLock$ThreadDemo.class
 congge\zklock\OrderNumGenerator.class
 rwlock\MyTestLock.class
 rwlock\ReadLock.class
+common\CurrencyTable.class
+common\Amount.class

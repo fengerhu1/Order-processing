@@ -27,6 +27,11 @@ public class WriteLock extends BaseLock implements LockI {
         this.basePath = basePath;
         if(!client.exists(basePath)) {
             client.createPersistent(basePath,true);
+            System.out.println("CREATE NODEEEEEEEEEEEEEEEEEEEEEEEE");
+        }
+        else
+        {
+            System.out.println("NODE EXISTINGGGGGGGGGGGGGGGGGGGGG");
         }
     }
 

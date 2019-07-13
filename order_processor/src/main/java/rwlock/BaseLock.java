@@ -79,6 +79,7 @@ public abstract class BaseLock {
                     };
 
                     try {
+                        System.out.println(ourPath+"开始监听上一个节点");
                         client.subscribeDataChanges(watchPath, previousListener);//只监听前一个节点
 
                         if (millisToWait != null) {
@@ -89,7 +90,7 @@ public abstract class BaseLock {
                                 break;
                             }
 
-                            latch.await(millisToWait, TimeUnit.MICROSECONDS);
+                            latch.await(millisToWait, TimeUnit.MILLISECONDS);
                         } else {
                             latch.await();
                         }

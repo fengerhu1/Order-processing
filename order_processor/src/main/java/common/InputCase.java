@@ -9,6 +9,8 @@ public class InputCase {
     public String initiaiator;
     @JSONField(name = "time")
     public Long time;
+    @JSONField(name = "order_id")
+    public String order_id;
     @JSONField(name = "item")
     public  ArrayList<InputItem> itemlist;
 
@@ -17,5 +19,6 @@ public class InputCase {
         this.initiaiator = initiaiator;
         this.time = time;
         this.itemlist = itemlist;
+        this.order_id = "111";
     }
 }
