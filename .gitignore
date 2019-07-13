@@ -1,1 +1,3 @@
 ./order_receiver/target/*
+/*/.idea
+/*/target
