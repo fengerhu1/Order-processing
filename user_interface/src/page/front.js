@@ -99,7 +99,7 @@ class Page extends Component {
                     user_id: '',
                     itemid: '',
                     itemnumber:'',
-                    order_items:null
+                    order_items:[]
                 })
             }).catch(function(e){
             console.log(e);
@@ -112,7 +112,7 @@ class Page extends Component {
             user_id: '',
             itemid: '',
             itemnumber:'',
-            order_items:null
+            order_items:[]
         })
     }
 
@@ -120,7 +120,7 @@ class Page extends Component {
         this.setState({
             showSearch: false,
             orderid:'',
-            searchResult:null
+            searchResult:[]
         })
     }
 
@@ -256,14 +256,6 @@ class Page extends Component {
     OrderId = (id) => {
         if (!this.isInt16(id)) {
             message.error("订单id需要为整数")
-            this.setState({
-                orderid: ''
-            })
-            return false;
-        }
-        let itemnumbern = Number.parseInt(id)
-        if (itemnumbern < 1) {
-            message.error("仅可输入正整数id")
             this.setState({
                 orderid: ''
             })
