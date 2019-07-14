@@ -19,6 +19,9 @@ public class KafkaProducerScheduler {
         properties.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         properties.put("value.serializer","org.apache.kafka.common.serialization.StringSerializer");
         queue = new LinkedBlockingQueue<>();
+        for (int i = 0; i < 5; i++) {
+            queue.add(new KafkaProducer<>(properties));
+        }
     }
 
     public KafkaProducer<String, String> getProducer(){
