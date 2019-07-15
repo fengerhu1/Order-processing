@@ -71,7 +71,7 @@ public class CreateOrder  {
         String msg = order.toJSONString();
         System.out.println(msg);
         producer.send(new ProducerRecord<String, String>(topic, getRandomString(20), msg));
-        if (scheduler.returnProducer(producer))
+        if (!scheduler.returnProducer(producer))
             throw new InterruptedException("return producer failure");
 //        producer.close();
         return order_id;
