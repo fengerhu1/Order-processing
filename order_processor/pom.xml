@@ -9,7 +9,7 @@
     <version>1.0-SNAPSHOT</version>
     <properties>
         <spark.version>2.2.0</spark.version>
-        <hibernate.core.version>3.6.10.Final</hibernate.core.version>
+        <hibernate.core.version>5.4.24.Final</hibernate.core.version>
         <hibernate.jpa.version>1.0.0.Final</hibernate.jpa.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -75,7 +75,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>5.2.11.Final</version>
+            <version>5.4.24.Final</version>
         </dependency>
 
         <!-- JDBC驱动的依赖，不使用mysql换成对应的驱动 -->
